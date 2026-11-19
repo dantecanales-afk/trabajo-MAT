@@ -1,4 +1,3 @@
-// Referencias a los elementos del DOM
 const spanB = document.getElementById("valor-b");
 const spanC = document.getElementById("valor-c");
 const spanExpresion = document.getElementById("expresion-funcion");
@@ -11,16 +10,33 @@ const contenidoLineal = document.getElementById("contenido-lineal");
 const cajaAfin = document.getElementById("caja-afin");
 const contenidoAfin = document.getElementById("contenido-afin");
 
+const cajaConstante = document.getElementById("caja-constante");
+const contenidoConstante = document.getElementById("contenido-constante");
+
+const cajaNula = document.getElementById("caja-nula");
+const contenidoNula = document.getElementById("contenido-nula");
+
 const inputGgb = document.getElementById("archivo-ggb");
 const estadoArchivo = document.getElementById("estado-archivo");
 
-// Genera un número entero aleatorio entre min y max (ambos incluidos)
+
 function generarEnteroAleatorio(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// Formatea la expresión f(x) = bx + c de forma legible
+
 function formatearFuncion(b, c) {
+ 
+  if (b === 0 && c === 0) {
+    return "f(x) = 0 (Sin función)";
+  }
+
+  
+  if (b === 0) {
+    return `f(x) = ${c}`;
+  }
+
+ 
   let textoB = "";
   if (b === 1) textoB = "x";
   else if (b === -1) textoB = "-x";
@@ -35,35 +51,67 @@ function formatearFuncion(b, c) {
   }
 }
 
-// Describe el comportamiento de la pendiente b
+
 function obtenerTextoPendiente(b) {
   if (b > 0) {
     return `<strong>Pendiente (b = ${b} &gt; 0):</strong> Función creciente (sube de izquierda a derecha).`;
-  } else if (b < 0) {
-    return `<strong>Pendiente (b = ${b} &lt; 0):</strong> Función decreciente (baja de izquierda a derecha).`;
   } else {
-    return `<strong>Pendiente (b = 0):</strong> Pendiente nula (recta horizontal constante).`;
+    return `<strong>Pendiente (b = ${b} &lt; 0):</strong> Función decreciente (baja de izquierda a derecha).`;
   }
 }
 
-// Función principal que genera b y c y clasifica la función
-function generarYClasificar() {
-  // 1. Generar coeficientes aleatorios entre -10 y 10
-  const b = generarEnteroAleatorio(-10, 10);
-  const c = generarEnteroAleatorio(-10, 10);
 
-  // 2. Actualizar valores en la interfaz
+function reiniciarCajas() {
+  [cajaLineal, cajaAfin, cajaConstante, cajaNula].forEach((caja) => {
+    caja.classList.remove("activa", "activa-alerta");
+  });
+
+  contenidoLineal.innerHTML = `<p class="mensaje-espera">No cumple la condición.</p>`;
+  contenidoAfin.innerHTML = `<p class="mensaje-espera">No cumple la condición.</p>`;
+  contenidoConstante.innerHTML = `<p class="mensaje-espera">No cumple la condición.</p>`;
+  contenidoNula.innerHTML = `<p class="mensaje-espera">No cumple la condición.</p>`;
+}
+
+
+function generarYClasificar() {
+ 
+  const b = generarEnteroAleatorio(-3, 3);
+  const c = generarEnteroAleatorio(-3, 3);
+
+ 
   spanB.textContent = b;
   spanC.textContent = c;
   const expresion = formatearFuncion(b, c);
   spanExpresion.textContent = expresion;
 
-  // 3. Evaluar condición (c === 0 -> Lineal | c !== 0 -> Afín)
-  if (c === 0) {
-    // Activar caja LINEAL y desactivar caja AFÍN
-    cajaLineal.classList.add("activa");
-    cajaAfin.classList.remove("activa");
 
+  reiniciarCajas();
+
+  
+  if (b === 0 && c === 0) {
+    
+    cajaNula.classList.add("activa-alerta");
+    contenidoNula.innerHTML = `
+      <ul>
+        <li><strong>Resultado:</strong> No hay función (ambos coeficientes son iguales a 0).</li>
+        <li><strong>Valores obtenidos:</strong> b = 0 y c = 0.</li>
+        <li><strong>Observación:</strong> Al anularse ambos términos, no se clasifica como Lineal, Afín ni Constante.</li>
+      </ul>
+    `;
+  } else if (b === 0 && c !== 0) {
+    
+    cajaConstante.classList.add("activa");
+    contenidoConstante.innerHTML = `
+      <ul>
+        <li><strong>Expresión:</strong> ${expresion}</li>
+        <li><strong>Gráfica:</strong> Línea recta completamente horizontal (paralela al eje X).</li>
+        <li><strong>Pendiente (b = 0):</strong> Pendiente nula (no sube ni baja).</li>
+        <li><strong>Corte Eje Y:</strong> Interseca al eje Y en el punto <strong>(0, ${c})</strong>.</li>
+      </ul>
+    `;
+  } else if (b !== 0 && c === 0) {
+    
+    cajaLineal.classList.add("activa");
     contenidoLineal.innerHTML = `
       <ul>
         <li><strong>Expresión:</strong> ${expresion}</li>
@@ -72,38 +120,32 @@ function generarYClasificar() {
         <li>${obtenerTextoPendiente(b)}</li>
       </ul>
     `;
-
-    contenidoAfin.innerHTML = `<p class="mensaje-espera">No aplica (el valor actual de c es 0).</p>`;
   } else {
-    // Activar caja AFÍN y desactivar caja LINEAL
+    
     cajaAfin.classList.add("activa");
-    cajaLineal.classList.remove("activa");
-
     contenidoAfin.innerHTML = `
       <ul>
         <li><strong>Expresión:</strong> ${expresion}</li>
         <li><strong>Gráfica:</strong> Línea recta que <strong>no</strong> pasa por el origen.</li>
         <li><strong>Corte Eje Y:</strong> Interseca al eje Y en las coordenadas <strong>(0, ${c})</strong>.</li>
         <li><strong>Inclinación:</strong> ${obtenerTextoPendiente(b)}</li>
-        <li><strong>Traslación:</strong> Es una traslación vertical de la función lineal <em>f(x) = ${b}x</em> en <strong>${c}</strong> unidades.</li>
+        <li><strong>Traslación:</strong> Traslación vertical de <em>f(x) = ${b}x</em> en <strong>${c}</strong> unidades.</li>
       </ul>
     `;
-
-    contenidoLineal.innerHTML = `<p class="mensaje-espera">No aplica (el valor actual de c es ${c} ≠ 0).</p>`;
   }
 }
 
-// Evento al hacer clic en "Generar / Cambiar"
+
 btnGenerar.addEventListener("click", generarYClasificar);
 
-// Evento para copiar la función al portapapeles (útil para GeoGebra)
+
 btnCopiar.addEventListener("click", () => {
   navigator.clipboard.writeText(spanExpresion.textContent);
   btnCopiar.textContent = "¡Copiado!";
   setTimeout(() => (btnCopiar.textContent = "Copiar"), 1500);
 });
 
-// Validación al seleccionar un archivo .ggb en la interfaz
+
 inputGgb.addEventListener("change", (evento) => {
   const archivo = evento.target.files[0];
   if (!archivo) return;
@@ -117,5 +159,5 @@ inputGgb.addEventListener("change", (evento) => {
   }
 });
 
-// Ejecutar una vez al cargar la página para mostrar datos iniciales
+
 generarYClasificar();
