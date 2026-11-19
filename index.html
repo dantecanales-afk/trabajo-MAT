@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clasificador de Funciones: Lineal y Afín</title>
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+
+<body>
+    <main class="contenedor">
+        <header>
+            <h1>Clasificador de Funciones</h1>
+            <p class="subtitulo">Evaluación de la función de primer grado <strong>f(x) = bx + c</strong></p>
+        </header>
+
+        <!-- Sección de Coeficientes y Botón Interactivo -->
+        <section class="panel-control">
+            <div class="coeficiente-box">
+                <span>b =</span>
+                <span id="valor-b" class="badge">0</span>
+            </div>
+
+            <div class="coeficiente-box">
+                <span>c =</span>
+                <span id="valor-c" class="badge">0</span>
+            </div>
+
+            <div class="ecuacion-box">
+                <span id="expresion-funcion">f(x) = 0</span>
+                <button id="btn-copiar" class="btn-secundario" title="Copiar para pegar en GeoGebra">Copiar</button>
+            </div>
+
+            <button id="btn-generar" class="btn-principal">Generar / Cambiar</button>
+        </section>
+
+        <!-- Cajas de Clasificación (Estructura Vertical según boceto) -->
+        <section class="cajas-clasificacion">
+            <!-- Caja 1: Función Lineal -->
+            <article id="caja-lineal" class="caja-funcion">
+                <div class="caja-header">
+                    <h2>FUNCIÓN LINEAL (F.L.)</h2>
+                    <span class="condicion">Condición: c = 0</span>
+                </div>
+                <div id="contenido-lineal" class="caja-body">
+                    <p class="mensaje-espera">Presiona "Generar / Cambiar" para evaluar.</p>
+                </div>
+            </article>
+
+            <!-- Caja 2: Función Afín -->
+            <article id="caja-afin" class="caja-funcion">
+                <div class="caja-header">
+                    <h2>FUNCIÓN AFÍN (F.A.)</h2>
+                    <span class="condicion">Condición: c ≠ 0</span>
+                </div>
+                <div id="contenido-afin" class="caja-body">
+                    <p class="mensaje-espera">Presiona "Generar / Cambiar" para evaluar.</p>
+                </div>
+            </article>
+        </section>
+
+        <!-- Sección GeoGebra y Archivo .ggb -->
+        <footer class="panel-geogebra">
+            <a href="https://www.geogebra.org/classic" target="_blank" rel="noopener noreferrer" class="btn-geogebra">
+                Abrir GeoGebra Clásico ↗
+            </a>
+
+            <div class="seccion-carga">
+                <label for="archivo-ggb" class="label-carga">
+                    Seleccionar archivo de GeoGebra (.ggb):
+                </label>
+                <input type="file" id="archivo-ggb" accept=".ggb">
+                <p id="estado-archivo" class="estado-archivo">Ningún archivo .ggb seleccionado aún.</p>
+                <!-- Enlace opcional al archivo .ggb que subas a tu repositorio de GitHub -->
+                <a href="./funcion.ggb" download class="enlace-descarga">Descargar modelo guardado (funcion.ggb)</a>
+            </div>
+        </footer>
+    </main>
+
+    <script src="static/js/script.js"></script>
+</body>
+
+</html>
